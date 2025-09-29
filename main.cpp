@@ -8,9 +8,9 @@ int main()
 
     std::cout << std::endl;
 
-    Board board = Board(20, 20);
+    Board board = Board(40, 20);
 
-    std::cout << board.out();
+    board.selectCells();
 
     return 0;
 }

@@ -1,6 +1,6 @@
 #include "../include/Board.hpp"
 
-Board::Board(size_t rows, size_t cols)
+Board::Board(size_t cols, size_t rows)
 {
     this->rows = rows;
     this->cols = cols;
@@ -34,4 +34,85 @@ std::string Board::out()
     }
 
     return output;
+}
+
+void Board::switchCell(Cell &cell)
+{
+    if (cell.out() == ".")
+    {
+        cell.setAlive();
+    }
+    else
+    {
+        cell.kill();
+    }
+}
+
+void Board::selectCells()
+{
+    int16_t x = (this->cols - (this->cols % 2)) / 2;
+    int16_t y = (this->rows - (this->rows % 2)) / 2;
+    bool finish = false;
+
+    initscr();
+    curs_set(1);
+    keypad(stdscr, TRUE);
+
+    while (!finish)
+    {
+        clear();
+        printw(Board::out().c_str());
+        printw("select cells using arrow keys and spacebar, then press enter to run simulation");
+        refresh();
+        move(y, x);
+        int character = getch();
+
+        switch (character)
+        {
+        case KEY_UP:
+            if (y > 1)
+            {
+                y--;
+            }
+            break;
+
+        case KEY_DOWN:
+            if (y < (this->rows - 2))
+            {
+                y++;
+            }
+            break;
+
+        case KEY_LEFT:
+            if (x > 1)
+            {
+                x--;
+            }
+            break;
+
+        case KEY_RIGHT:
+            if (x < (this->cols - 2))
+            {
+                x++;
+            }
+            break;
+
+        case ' ':
+            Board::switchCell(this->cells[x + (y * this->cols)]);
+            break;
+
+        case '\n':
+            finish = true;
+            break;
+
+        default:
+            break;
+        }
+    }
+    clear();
+    endwin();
+}
+
+void Board::runSimulation()
+{
 }
