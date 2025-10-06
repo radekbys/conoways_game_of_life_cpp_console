@@ -15,6 +15,7 @@ public:
     void setAlive();
     void kill();
     std::string out();
+    bool getIsAlive();
 };
 
 #endif

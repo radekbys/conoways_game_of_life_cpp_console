@@ -31,3 +31,8 @@ std::string Cell::out()
     }
     return ".";
 }
+
+bool Cell::getIsAlive()
+{
+    return this->isAlive;
+}

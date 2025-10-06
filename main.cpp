@@ -1,16 +1,18 @@
 #include <iostream>
+#include <cstdlib>
 #include "./include/Board.hpp"
 
-int main()
+int main(int argc, char *argv[])
 {
-    std::cout << "Hello World!" << std::endl
-              << __cplusplus << std::endl;
+    Board board;
 
-    std::cout << std::endl;
-
-    Board board = Board(40, 20);
+    if (argc == 4)
+        board = Board(atoi(argv[1]), atoi(argv[2]), atoi(argv[3]));
+    else
+        board = Board();
 
     board.selectCells();
+    board.runSimulation();
 
     return 0;
 }

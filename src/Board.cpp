@@ -1,9 +1,10 @@
 #include "../include/Board.hpp"
 
-Board::Board(size_t cols, size_t rows)
+Board::Board(size_t cols, size_t rows, int gens)
 {
     this->rows = rows;
     this->cols = cols;
+    this->generations = gens;
 
     this->cells = std::vector<Cell>(rows * cols, Cell(false));
 
@@ -115,4 +116,50 @@ void Board::selectCells()
 
 void Board::runSimulation()
 {
+    initscr();
+
+    for (int k = 0; k < this->generations; k++)
+    {
+
+        std::vector<Cell> nextGen = std::vector<Cell>(this->cells);
+
+        for (size_t i = 0; i < this->rows; i++)
+        {
+            for (size_t j = 0; j < this->cols; j++)
+            {
+                int sumOfNeighbors = 0;
+                if (this->cells[((i - 1) * this->cols) + (j - 1)].getIsAlive())
+                    ++sumOfNeighbors;
+                if (this->cells[((i - 1) * this->cols) + (j)].getIsAlive())
+                    ++sumOfNeighbors;
+                if (this->cells[((i - 1) * this->cols) + (j + 1)].getIsAlive())
+                    ++sumOfNeighbors;
+                if (this->cells[((i) * this->cols) + (j - 1)].getIsAlive())
+                    ++sumOfNeighbors;
+                if (this->cells[((i) * this->cols) + (j + 1)].getIsAlive())
+                    ++sumOfNeighbors;
+                if (this->cells[((i + 1) * this->cols) + (j - 1)].getIsAlive())
+                    ++sumOfNeighbors;
+                if (this->cells[((i + 1) * this->cols) + (j)].getIsAlive())
+                    ++sumOfNeighbors;
+                if (this->cells[((i + 1) * this->cols) + (j + 1)].getIsAlive())
+                    ++sumOfNeighbors;
+
+                if (sumOfNeighbors < 2)
+                    nextGen[(i * this->cols) + j].kill();
+                else if (sumOfNeighbors == 3)
+                    nextGen[(i * this->cols) + j].setAlive();
+                else if (sumOfNeighbors > 3)
+                    nextGen[(i * this->cols) + j].kill();
+            }
+        }
+
+        this->cells = nextGen;
+        clear();
+        printw(Board::out().c_str());
+        refresh();
+        std::this_thread::sleep_for(std::chrono::milliseconds(500));
+    }
+
+    endwin();
 }
